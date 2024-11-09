@@ -18,6 +18,7 @@ import re
 # Globals
 
 TITLE = "Brosince Group Sdn Bhd | Claim Reporting System"
+APP_ICON    = "icon/CPS.ico"
 ROOT_BG_COLOR   = "#E6EBF6"
 FONT_SIZE = 15
 INPUT_WIDTH = 30
@@ -31,6 +32,7 @@ class App_page:
     def __init__(self, root):
         self.root = root
         self.root.title("%s" %TITLE)
+        self.root.iconbitmap(default=APP_ICON)
         
         # --- set bg color
         self.root.config(bg=ROOT_BG_COLOR)
@@ -275,6 +277,7 @@ class App_page:
 
 def main_win():
     window = Tk()
+    window.iconbitmap(APP_ICON)
     app = App_page(window)
     return window
 
