@@ -12,6 +12,7 @@ from PIL import Image, ImageTk
 from fpdf import FPDF
 from datetime import date, datetime
 from random import *
+import re
 
 # -----------------------------------------------------------------------------
 # Globals
@@ -31,9 +32,6 @@ class App_page:
         self.root = root
         self.root.title("%s" %TITLE)
         
-        # --- fullscreen with title bar
-        self.root.state('zoomed')
-        
         # --- set bg color
         self.root.config(bg=ROOT_BG_COLOR)
         
@@ -42,13 +40,15 @@ class App_page:
         self.receipt_path = None
         self.claims = []  # List to hold multiple claims
         
-        self.root.withdraw()
+        # --- hide the main window
+        self.root_hide()
         
         # --- ask for claimant name
         self.claimant = simpledialog.askstring(title="Claimant Name", prompt="Please key in your name:", parent=self.root)
         
         if self.claimant:
-            self.root.deiconify()
+            # --- restore the main window
+            self.root_show()
             
             # --- App layout
             # --- --- Data View
@@ -137,10 +137,12 @@ class App_page:
     
     # Function to add claim to list
     def add_claim(self):
-        # global receipt_path
-        # Validate that all fields are filled
+        # --- Validate that all fields are filled
         if not (self.claimant and self.entry_transaction_date.get() and self.trans_amount.get() and self.trans_description.get() and self.receipt_path):
             messagebox.showerror("Error", "All fields and receipt image must be filled in.")
+            return
+        elif not self.is_positive_float(self.trans_amount.get()):
+            messagebox.showerror("Error", "Amount must be Positive Numbers only.")
             return
 
         # Store the claim data in the list
@@ -223,7 +225,7 @@ class App_page:
 
         # Add total claim amount to the PDF
         pdf.set_font("Arial", "B", 12)
-        pdf.cell(0, 10, f"Total Claim Amount: ${total_amount:.2f}", ln=True, align="R")
+        pdf.cell(0, 10, f"Total Claim Amount: RM{total_amount:.2f}", ln=True, align="L")
         pdf.ln(10)
 
         # Add each claim's receipt image below the table
@@ -244,6 +246,29 @@ class App_page:
 
         # Clear claims after generating the report
         self.claims.clear()
+    
+    def is_float_regex(self, value):
+        # --- Regular expression to match a float (positive or negative, with decimals)
+        float_pattern = r'^-?\d+(\.\d+)?$'
+        return bool(re.match(float_pattern, value))
+    
+    def is_positive_float(self, value):
+        try:
+            # --- Try converting the string to a float
+            result = float(value)
+            # --- Check if the float is positive
+            return result > 0
+        except ValueError:
+            # --- If conversion fails, return False
+            return False
+    
+    def root_show(self):
+        self.root.deiconify()
+        # --- fullscreen with title bar
+        self.root.state('zoomed')
+    
+    def root_hide(self):
+        self.root.withdraw()
     
     def exits(self):
         self.root.destroy()
