@@ -3,6 +3,9 @@
 Created on Fri Nov  8 23:25:38 2024
 
 @author: gangylee
+
+@GitHub
+
 """
 
 from tkinter import *
@@ -13,6 +16,7 @@ from fpdf import FPDF
 from datetime import date, datetime
 from random import *
 import re
+import sqlite3
 
 # -----------------------------------------------------------------------------
 # Globals
@@ -25,6 +29,8 @@ INPUT_WIDTH = 30
 
 REPORT_ABBR = "CR"
 REPORT_NUM = "%s%s_%s" %(REPORT_ABBR, datetime.now().strftime('%Y%m%d_%H%M%S'), randint(1, 1000))
+
+DATABASE = 'claim_report.db'
 
 # -----------------------------------------------------------------------------
 

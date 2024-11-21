@@ -4,6 +4,8 @@ Created on Tue Nov 19 11:05:57 2024
 
 @author: gangylee
 
+@GitHub
+
 @Features Summary
 1. Profile Tab:
     - Save user details.
@@ -28,9 +30,11 @@ import matplotlib.pyplot as plt
 from datetime import date
 import csv
 
+database = 'fitness.db'
+
 # Initialize Database
 def init_db():
-    conn = sqlite3.connect('fitness.db')
+    conn = sqlite3.connect(database)
     cursor = conn.cursor()
     
     # User table
@@ -114,7 +118,7 @@ class FitnessApp:
             messagebox.showerror("Error", "Please fill out all fields.")
             return
         
-        conn = sqlite3.connect('fitness.db')
+        conn = sqlite3.connect(database)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO user (name, age, weight, height) VALUES (?, ?, ?, ?)", (name, age, weight, height))
         conn.commit()
@@ -155,7 +159,7 @@ class FitnessApp:
             messagebox.showerror("Error", "Please enter valid data.")
             return
         
-        conn = sqlite3.connect('fitness.db')
+        conn = sqlite3.connect(database)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO workout (date, workout, duration) VALUES (?, ?, ?)", (today, workout, int(duration)))
         conn.commit()
@@ -164,7 +168,7 @@ class FitnessApp:
         messagebox.showinfo("Success", "Workout added!")
     
     def view_workout_plan(self):
-        conn = sqlite3.connect('fitness.db')
+        conn = sqlite3.connect(database)
         cursor = conn.cursor()
         cursor.execute("SELECT date, workout, duration FROM workout ORDER BY date")
         data = cursor.fetchall()
@@ -200,7 +204,7 @@ class FitnessApp:
             messagebox.showerror("Error", "Please enter valid data.")
             return
         
-        conn = sqlite3.connect('fitness.db')
+        conn = sqlite3.connect(database)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO calories (date, meal, calories) VALUES (?, ?, ?)", (today, meal, int(calories)))
         conn.commit()
@@ -214,7 +218,7 @@ class FitnessApp:
         tk.Button(self.report_tab, text="Export Data", command=self.export_data).grid(row=1, column=0, padx=10, pady=10)
     
     def view_calorie_report(self):
-        conn = sqlite3.connect('fitness.db')
+        conn = sqlite3.connect(database)
         cursor = conn.cursor()
         cursor.execute("SELECT date, SUM(calories) FROM calories GROUP BY date")
         data = cursor.fetchall()
@@ -239,7 +243,7 @@ class FitnessApp:
         if not filename:
             return
         
-        conn = sqlite3.connect('fitness.db')
+        conn = sqlite3.connect(database)
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM calories")
         data = cursor.fetchall()
